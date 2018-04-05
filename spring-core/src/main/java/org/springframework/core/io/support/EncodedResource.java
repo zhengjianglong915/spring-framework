@@ -137,7 +137,7 @@ public class EncodedResource implements InputStreamSource {
 	 */
 	public Reader getReader() throws IOException {
 		/**
-		 * ÉèÖÃ±àÂëÊôĞÔ
+		 * è®¾ç½®ç¼–ç æ ¼å¼
 		 */
 		if (this.charset != null) {
 			return new InputStreamReader(this.resource.getInputStream(), this.charset);

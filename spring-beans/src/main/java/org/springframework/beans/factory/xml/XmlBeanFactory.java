@@ -55,7 +55,7 @@ import org.springframework.core.io.Resource;
 public class XmlBeanFactory extends DefaultListableBeanFactory {
 
 	/**
-	 * 将DefaultListableBeanFactory传入，用户注册
+	 * 锟斤拷DefaultListableBeanFactory锟斤拷锟诫，锟矫伙拷注锟斤拷
 	 */
 	private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);
 
@@ -79,7 +79,7 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
 	 */
 	public XmlBeanFactory(Resource resource, BeanFactory parentBeanFactory) throws BeansException {
 		super(parentBeanFactory);
-		// 将处理交给XmlBeanDefinitionReader，让它负责完成BeanDefinition的读取，然后交给DefaultListableBeanFactory完成注册
+		// 璁mlBeanDefinitionReader璐熻浇鍔犺浇xml鏂囦欢骞剁敓鎴怋eanDefinition, 鏈�鍚庨�氳繃DefaultListableBeanFactory杩涜娉ㄥ唽
 		this.reader.loadBeanDefinitions(resource);
 	}
 

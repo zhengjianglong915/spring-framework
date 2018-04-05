@@ -300,8 +300,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
-		// ×ªÎªEncodedResource×ÊÔ´£¬¿¼ÂÇµ½±àÂëÇé¿ö
-		// ÔÚgetReaderÖĞÉèÖÃÁË±àÂëÊôĞÔ
+		// è½¬æ¢ä¸ºEncodedResourceï¼Œ è€ƒè™‘ç¼–ç å½¢å¼
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
@@ -318,33 +317,33 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			logger.info("Loading XML bean definitions from " + encodedResource.getResource());
 		}
 
-		// Í¨¹ıÊôĞÔÀ´¼ÇÂ¼ÒÑ¾­¼ÓÔØµÄ×ÊÔ´
-		// ÊÇthreadLocal±äÁ¿£¬¼ÇÂ¼µ±Ç°Ïß³ÌÒÑ¾­´¦ÀíµÄ
+		// è·å–å½“å‰å·²åŠ è½½çš„é…ç½®æ–‡ä»¶
+		// threadLocalç±»å‹ï¼Œæœ¬åœ°çº¿ç¨‹
 		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 		if (currentResources == null) {
 			currentResources = new HashSet<>(4);
 			this.resourcesCurrentlyBeingLoaded.set(currentResources);
 		}
 
-		// ±íÊ¾ÒÑ¾­¼ÇÔØ¹ıÁË£¬ÓĞÖØĞÂ¼ÓÔØ¡£Ó¦¸ÃĞÎ³ÉÁËÑ­»·¼ÓÔØÁË AÎÄ¼ş°üº¬BÎÄ¼ş£¬BÎÄ¼şÓÖ°üº¬ÁËAÎÄ¼ş
+		// å¦‚æœåŠ è½½è¿‡äº†ï¼Œåˆ™è¯´æ˜äº§ç”Ÿäº†å¾ªç¯ä¾èµ–ã€‚ Aæ–‡ä»¶å¼•å…¥çš„Bæ–‡ä»¶ï¼ŒBæ–‡ä»¶å¼•å…¥äº†Aæ–‡ä»¶
 		if (!currentResources.add(encodedResource)) {
 			throw new BeanDefinitionStoreException(
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
 
 		try {
-			// »ñµÃÊäÈëÁ÷
+			// è·å–è¾“å…¥æµ
 			InputStream inputStream = encodedResource.getResource().getInputStream();
 			try {
 				InputSource inputSource = new InputSource(inputStream);
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
-				// ½øÈëÕæÕıµÄºËĞÄ²Ù×÷
+				// æ‰§è¡Œbeanè§£æçš„æ ¸å¿ƒæµç¨‹
 				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 			}
 			finally {
-				// ¹Ø±ÕÁ÷
+				// å…³é—­æµ
 				inputStream.close();
 			}
 		}
@@ -398,12 +397,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 		try {
 			/**
-			 * »ñµÃDocument
+			 * è§£æå¾—åˆ°Document
 			 */
 			Document doc = doLoadDocument(inputSource, resource);
 
 			/**
-			 * ½âÎödoc»ñµÃbeanDefinition ²¢×¢²á
+			 * ä»Documentä¸­è§£æBeanDefinitionå¹¶æ³¨å†Œ
 			 */
 			return registerBeanDefinitions(doc, resource);
 		}
@@ -444,7 +443,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
 
 		return this.documentLoader.loadDocument(inputSource, getEntityResolver(), this.errorHandler,
-				// »ñÈ¡ÎÄ¼ş²ÉÓÃµÄÄ£Ê½ DTD»òÕßXSD
+				// ï¿½ï¿½È¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ãµï¿½Ä£Ê½ DTDï¿½ï¿½ï¿½ï¿½XSD
 				getValidationModeForResource(resource), isNamespaceAware());
 	}
 
@@ -458,11 +457,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	protected int getValidationModeForResource(Resource resource) {
 		int validationModeToUse = getValidationMode();
-		// ÊÖ¶¯Ö¸¶¨ÁËÑéÖ¤Ä£Ê½£¬ÔòÊ¹ÓÃÖ¸¶¨µÄÑéÖ¤Ä£Ê½
+		// ï¿½Ö¶ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤Ä£Ê½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤Ä£Ê½
 		if (validationModeToUse != VALIDATION_AUTO) {
 			return validationModeToUse;
 		}
-		// Èç¹ûÎ´Ö¸¶¨ÔòÊ¹ÓÃ×Ô¶¯¼ì²â
+		// ï¿½ï¿½ï¿½Î´Ö¸ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½
 		int detectedMode = detectValidationMode(resource);
 		if (detectedMode != VALIDATION_AUTO) {
 			return detectedMode;
@@ -530,12 +529,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		int countBefore = getRegistry().getBeanDefinitionCount();
 
 		/**
-		 * ×¢²á
+		 * ×¢ï¿½ï¿½
 		 */
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
 
 		/**
-		 * ÒÑ¾­×¢²áµÄbeanÊıÁ¿
+		 * ï¿½Ñ¾ï¿½×¢ï¿½ï¿½ï¿½beanï¿½ï¿½ï¿½ï¿½
 		 */
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
