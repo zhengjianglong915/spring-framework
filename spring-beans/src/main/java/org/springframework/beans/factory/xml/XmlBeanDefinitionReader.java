@@ -257,6 +257,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	protected EntityResolver getEntityResolver() {
 		if (this.entityResolver == null) {
+			/**
+			 * 用法从本地获取DTD声明文件
+			 */
 			// Determine default EntityResolver to use.
 			ResourceLoader resourceLoader = getResourceLoader();
 			if (resourceLoader != null) {
@@ -441,9 +444,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see DocumentLoader#loadDocument
 	 */
 	protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
-
+		/**
+		 * 获取document
+		 * DefaultDocumentLoader
+		 */
 		return this.documentLoader.loadDocument(inputSource, getEntityResolver(), this.errorHandler,
-				// ��ȡ�ļ����õ�ģʽ DTD����XSD
+				// 获取验证模式 DTD或XSD
 				getValidationModeForResource(resource), isNamespaceAware());
 	}
 
@@ -457,11 +463,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	protected int getValidationModeForResource(Resource resource) {
 		int validationModeToUse = getValidationMode();
-		// �ֶ�ָ������֤ģʽ����ʹ��ָ������֤ģʽ
+		// 如果手动设置验证，则采用设置的验证模式
 		if (validationModeToUse != VALIDATION_AUTO) {
 			return validationModeToUse;
 		}
-		// ���δָ����ʹ���Զ����
+		// 否则采用自动验证
 		int detectedMode = detectValidationMode(resource);
 		if (detectedMode != VALIDATION_AUTO) {
 			return detectedMode;
@@ -523,18 +529,20 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
 		/**
-		 *
+		 * 实例化DefaultBeanDefinitionDocumentReader
+		 * 采用BeanUtils.instantiateClass 方式实例化
 		 */
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		// 之前的实体数量
 		int countBefore = getRegistry().getBeanDefinitionCount();
 
 		/**
-		 * ע��
+		 * 解析并注册bean
 		 */
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
 
 		/**
-		 * �Ѿ�ע���bean����
+		 * 计算增加的bean数量
 		 */
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
