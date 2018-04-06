@@ -46,8 +46,17 @@ public class MethodBeforeAdviceInterceptor implements MethodInterceptor, Seriali
 		this.advice = advice;
 	}
 
+	/**
+	 *
+	 * @param mi 是调用是传进来的代理ReflectiveMethodInvocation
+	 * @return
+	 * @throws Throwable
+	 */
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
+		/**
+		 * mi是被拦截的类
+		 */
 		this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis() );
 		return mi.proceed();
 	}
