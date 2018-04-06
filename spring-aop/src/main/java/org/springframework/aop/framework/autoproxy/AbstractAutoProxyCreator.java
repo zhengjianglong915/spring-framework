@@ -268,6 +268,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			if (StringUtils.hasLength(beanName)) {
 				this.targetSourcedBeans.add(beanName);
 			}
+			/**
+			 * 如果存在增强则创建代理
+			 */
 			Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);
 			/**
 			 * 创建代理

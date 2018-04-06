@@ -122,15 +122,21 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	}
 
 	/**
+	 * 即使配置了多个，也只能使用其中一个
 	 * Find and return the first AspectJ annotation on the given method
 	 * (there <i>should</i> only be one anyway...)
 	 */
 	@SuppressWarnings("unchecked")
 	@Nullable
 	protected static AspectJAnnotation<?> findAspectJAnnotationOnMethod(Method method) {
+		// 设置敏感的注解类
 		Class<?>[] classesToLookFor = new Class<?>[] {
 				Before.class, Around.class, After.class, AfterReturning.class, AfterThrowing.class, Pointcut.class};
 		for (Class<?> c : classesToLookFor) {
+			/**
+			 * 获取指定注解方法上的指定注解，并使用AspectJAnnotation封装
+			 * In
+			 */
 			AspectJAnnotation<?> foundAnnotation = findAnnotation(method, (Class<Annotation>) c);
 			if (foundAnnotation != null) {
 				return foundAnnotation;

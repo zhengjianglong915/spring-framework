@@ -123,6 +123,9 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 		List<Advisor> advisors = new LinkedList<>();
 		for (Method method : getAdvisorMethods(aspectClass)) {
+			/**
+			 * 获取每个方法的 advisor
+			 */
 			Advisor advisor = getAdvisor(method, lazySingletonAspectInstanceFactory, advisors.size(), aspectName);
 			if (advisor != null) {
 				advisors.add(advisor);
@@ -131,12 +134,18 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 		// If it's a per target aspect, emit the dummy instantiating aspect.
 		if (!advisors.isEmpty() && lazySingletonAspectInstanceFactory.getAspectMetadata().isLazilyInstantiated()) {
+			/**
+			 * 增加同步实例化z增强器
+			 */
 			Advisor instantiationAdvisor = new SyntheticInstantiationAdvisor(lazySingletonAspectInstanceFactory);
 			advisors.add(0, instantiationAdvisor);
 		}
 
 		// Find introduction fields.
 		for (Field field : aspectClass.getDeclaredFields()) {
+			/**
+			 * 获取DeclareParentsAdvisor增强器
+			 */
 			Advisor advisor = getDeclareParentsAdvisor(field);
 			if (advisor != null) {
 				advisors.add(advisor);
@@ -188,19 +197,27 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			int declarationOrderInAspect, String aspectName) {
 
 		validate(aspectInstanceFactory.getAspectMetadata().getAspectClass());
-
+		/**
+		 * 切点信息获取
+		 */
 		AspectJExpressionPointcut expressionPointcut = getPointcut(
 				candidateAdviceMethod, aspectInstanceFactory.getAspectMetadata().getAspectClass());
 		if (expressionPointcut == null) {
 			return null;
 		}
 
+		/**
+		 * 根据切点生成增强器
+		 */
 		return new InstantiationModelAwarePointcutAdvisorImpl(expressionPointcut, candidateAdviceMethod,
 				this, aspectInstanceFactory, declarationOrderInAspect, aspectName);
 	}
 
 	@Nullable
 	private AspectJExpressionPointcut getPointcut(Method candidateAdviceMethod, Class<?> candidateAspectClass) {
+		/**
+		 * 获取方法上注解
+		 */
 		AspectJAnnotation<?> aspectJAnnotation =
 				AbstractAspectJAdvisorFactory.findAspectJAnnotationOnMethod(candidateAdviceMethod);
 		if (aspectJAnnotation == null) {
@@ -209,6 +226,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 		AspectJExpressionPointcut ajexp =
 				new AspectJExpressionPointcut(candidateAspectClass, new String[0], new Class<?>[0]);
+		// 得到注解表达式
 		ajexp.setExpression(aspectJAnnotation.getPointcutExpression());
 		if (this.beanFactory != null) {
 			ajexp.setBeanFactory(this.beanFactory);
@@ -245,6 +263,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 		AbstractAspectJAdvice springAdvice;
 
+		// 根据不同的注解封装不同的增强器
 		switch (aspectJAnnotation.getAnnotationType()) {
 			case AtBefore:
 				springAdvice = new AspectJMethodBeforeAdvice(
@@ -286,7 +305,11 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 		// Now to configure the advice...
 		springAdvice.setAspectName(aspectName);
+		/**
+		 *
+		 */
 		springAdvice.setDeclarationOrder(declarationOrder);
+
 		String[] argNames = this.parameterNameDiscoverer.getParameterNames(candidateAdviceMethod);
 		if (argNames != null) {
 			springAdvice.setArgumentNamesFromStringArray(argNames);

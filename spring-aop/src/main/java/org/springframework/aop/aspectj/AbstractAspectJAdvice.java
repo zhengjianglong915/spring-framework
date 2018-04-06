@@ -624,7 +624,9 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	protected Object invokeAdviceMethod(
 			@Nullable JoinPointMatch jpMatch, @Nullable Object returnValue, @Nullable Throwable ex)
 			throws Throwable {
-
+		/**
+		 *
+		 */
 		return invokeAdviceMethodWithGivenArgs(argBinding(getJoinPoint(), jpMatch, returnValue, ex));
 	}
 
@@ -642,6 +644,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		}
 		try {
 			ReflectionUtils.makeAccessible(this.aspectJAdviceMethod);
+			// 激活增强方法
 			// TODO AopUtils.invokeJoinpointUsingReflection
 			return this.aspectJAdviceMethod.invoke(this.aspectInstanceFactory.getAspectInstance(), actualArgs);
 		}

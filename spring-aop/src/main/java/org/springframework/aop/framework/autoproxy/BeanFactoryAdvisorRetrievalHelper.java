@@ -70,6 +70,9 @@ public class BeanFactoryAdvisorRetrievalHelper {
 		synchronized (this) {
 			advisorNames = this.cachedAdvisorBeanNames;
 			if (advisorNames == null) {
+				/**
+				 * 获取所有类型是Advisor的beanName
+				 */
 				// Do not initialize FactoryBeans here: We need to leave all regular beans
 				// uninitialized to let the auto-proxy creator apply to them!
 				advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
@@ -81,9 +84,14 @@ public class BeanFactoryAdvisorRetrievalHelper {
 			return new LinkedList<>();
 		}
 
+		/**
+		 * 遍历所有的beanName找出对应的增强方法
+		 */
 		List<Advisor> advisors = new LinkedList<>();
 		for (String name : advisorNames) {
+			// 不符合规则的则忽略，
 			if (isEligibleBean(name)) {
+
 				if (this.beanFactory.isCurrentlyInCreation(name)) {
 					if (logger.isDebugEnabled()) {
 						logger.debug("Skipping currently created advisor '" + name + "'");
@@ -91,6 +99,9 @@ public class BeanFactoryAdvisorRetrievalHelper {
 				}
 				else {
 					try {
+						/**
+						 * 获取bean
+						 */
 						advisors.add(this.beanFactory.getBean(name, Advisor.class));
 					}
 					catch (BeanCreationException ex) {
